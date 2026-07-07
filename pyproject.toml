@@ -1,0 +1,23 @@
+[project]
+name = "qe-agents"
+version = "0.1.0"
+description = "Agentic QE system: test planning, generation, execution, and defect triage"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "langgraph>=1.2.8",
+    "python-dotenv>=1.2.2",
+    "openai>=1.50.0",
+    "pytest>=8.0.0",
+    "requests>=2.31.0",
+    "pydantic>=2.7.0",
+]
+
+[dependency-groups]
+dev = [
+    "notebook>=7.6.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
