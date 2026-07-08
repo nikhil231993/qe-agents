@@ -117,8 +117,8 @@ details and caveats.
 
 ## Scope note
 
-This is a 1-day design-exercise build: breadth over depth across all four
-stages, with several safety/robustness features (AST-gated sandboxing, a
-human-in-the-loop approval gate, parallel test execution) deliberately
-deferred rather than half-built. These tradeoffs — and what a hardened
-version would add — are called out explicitly in `DESIGN.md`.
+This build favors breadth over depth across all four pipeline stages, with
+several safety/robustness features (AST-gated sandboxing, a human-in-the-loop
+approval gate, parallel test execution) deliberately deferred rather than
+half-built. These tradeoffs — and what a hardened version would add — are
+called out explicitly in `DESIGN.md`.
