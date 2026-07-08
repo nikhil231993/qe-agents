@@ -14,9 +14,21 @@ from qe_agents import settings
 def get_client() -> OpenAI:
     if not settings.GITHUB_TOKEN:
         raise RuntimeError(
-            "GITHUB_TOKEN is not set. Create a GitHub PAT with 'models: read' "
-            "permission (or run `gh auth login` and `export "
-            "GITHUB_TOKEN=$(gh auth token)`), then re-run."
+            "GITHUB_TOKEN is not set.\n"
+            "\n"
+            "This project uses GitHub Models for LLM inference. Authenticate "
+            "using either:\n"
+            "\n"
+            "  gh auth login\n"
+            "  export GITHUB_TOKEN=$(gh auth token)\n"
+            "\n"
+            "or:\n"
+            "\n"
+            "  export GITHUB_TOKEN=<PAT with models:read>\n"
+            "\n"
+            "To run the offline mocked tests (no token required):\n"
+            "\n"
+            "  uv run pytest tests/ -v"
         )
     return OpenAI(base_url=settings.GITHUB_MODELS_BASE_URL, api_key=settings.GITHUB_TOKEN)
 

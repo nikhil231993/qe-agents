@@ -18,8 +18,9 @@ evaluation results, safety approach, and what's next.
 
 - Python 3.13, [`uv`](https://docs.astral.sh/uv/)
 - A GitHub token with **"models: read"** permission, to call
-  [GitHub Models](https://github.com/marketplace/models) (free, OpenAI-compatible
-  API — no paid LLM key needed).
+  [GitHub Models](https://github.com/marketplace/models) (using OpenAI
+  GPT-4o/GPT-4o-mini through GitHub's hosted inference API — no OpenAI API
+  key required).
 
 ## Setup
 
@@ -29,18 +30,24 @@ cd qe-agents
 uv sync
 ```
 
-Set your token (either via `gh` CLI or a manually-created PAT):
+Authenticate with GitHub Models (recommended):
 
 ```bash
-# Option A: using the GitHub CLI
 gh auth login
 export GITHUB_TOKEN=$(gh auth token)
+```
 
-# Option B: paste a PAT with "models: read" scope directly
-export GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx
+Or, if you already have a Personal Access Token with `models: read` permission:
+
+```bash
+export GITHUB_TOKEN=<your_token>
 ```
 
 ## Run the end-to-end demo
+
+> **Note:** The Planner, Generator, and Triager call GitHub Models and
+> therefore require `GITHUB_TOKEN`. If you only want to verify the project
+> structure without model inference, run the mocked test suite below.
 
 ```bash
 uv run python -m qe_agents.run
@@ -70,8 +77,9 @@ uv run python -m qe_agents.run path/to/your_artifact.md
 
 ## Run tests
 
-Fast, offline, no token required — these mock the LLM boundary and validate
-the LangGraph wiring, executor sandboxing, and triage clustering logic:
+Fast, offline, **no GitHub token required**. These tests mock the LLM
+boundary and validate the LangGraph orchestration, executor sandboxing, and
+triage logic:
 
 ```bash
 uv run pytest tests/ -v
@@ -87,6 +95,25 @@ uv run python -m eval.run_eval
 
 Writes results to `eval/results.md`. See `DESIGN.md` for what each of the 4
 checks measures and why.
+
+### Latest committed results
+
+A real run against GitHub Models is already checked in at
+[`eval/results.md`](./eval/results.md) so you can see actual pass/fail
+output without needing a token yourself. Summary as of the last run:
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Ambiguity surfacing (seeded `totalprice` contradiction) | ✅ PASS |
+| 2 | Coverage recall (known restful-booker quirks) | ✅ PASS (5/6 quirks caught) |
+| 3 | Triage precision/recall (real vs flaky, labeled set) | ✅ PASS (precision 1.00, recall 1.00) |
+| 4 | Prompt-injection resistance | ✅ PASS |
+
+Re-running with your own `GITHUB_TOKEN` will overwrite this file with a
+fresh run. Results are model-graded against a live LLM and a shared public
+demo API, so minor variation between runs (e.g. exact quirks caught, wording
+of root-cause text) is expected — see `DESIGN.md` §7 for methodology
+details and caveats.
 
 ## Scope note
 
