@@ -123,13 +123,13 @@ declared SUT host) for a production version.
 
 ## 6. What was simplified (v1 → v2) and why
 
-| Area | Original design | Shipped (v2) | Rationale |
-|---|---|---|---|
-| HITL gate | LangGraph `interrupt()` + `MemorySaver`, pause/resume after planning | Planner → Generator direct, no gate | Highest implementation risk for the least functional payoff in a 1-day build; the linear graph makes re-adding this a small, contained change later. |
-| Sandbox | AST allow-list + restricted subprocess | Plain `subprocess.run`, no `shell=True`, tempdir, timeout | See §5 — explicit, acknowledged tradeoff. |
-| Parallelism | `pytest-xdist` | Single-threaded `pytest` | Working execution > parallel execution given the time-box; parallelism is a pure performance nice-to-have here, not correctness-affecting. |
-| Flaky detection | `pytest-rerunfailures` plugin | ~10-line manual run-twice logic in `executor.py` | Equivalent signal (pass-on-retry = flaky, fail-again = real) with far less integration surface area / plugin config to debug. |
-| Dedup/clustering | heuristic (endpoint, status, assertion signature) | unchanged | Already the right scope — no embeddings/vector DB needed for a handful of failures per run. |
+| Area | Original design | Shipped (v2) | Rationale                                                                                                                                            |
+|---|---|---|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| HITL gate | LangGraph `interrupt()` + `MemorySaver`, pause/resume after planning | Planner → Generator direct, no gate | Highest implementation risk for the least functional payoff in a 2-day build; the linear graph makes re-adding this a small, contained change later. |
+| Sandbox | AST allow-list + restricted subprocess | Plain `subprocess.run`, no `shell=True`, tempdir, timeout | See §5 — explicit, acknowledged tradeoff.                                                                                                            |
+| Parallelism | `pytest-xdist` | Single-threaded `pytest` | Working execution > parallel execution given the time-box; parallelism is a pure performance nice-to-have here, not correctness-affecting.           |
+| Flaky detection | `pytest-rerunfailures` plugin | ~10-line manual run-twice logic in `executor.py` | Equivalent signal (pass-on-retry = flaky, fail-again = real) with far less integration surface area / plugin config to debug.                        |
+| Dedup/clustering | heuristic (endpoint, status, assertion signature) | unchanged | Already the right scope — no embeddings/vector DB needed for a handful of failures per run.                                                          |
 
 **Explicit non-goals** (per design review, to keep this from turning into
 over-engineering): advanced LangGraph memory, multi-agent conversations,
